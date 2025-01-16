@@ -18,7 +18,13 @@ func Generate(configPath, stageStr, image string, servicePath []string) {
 	switch stageStr {
 	case "dev", "test", "local", "alpha", "beta", "staging":
 		config.Cfg.Hpa.Enabled = false
-		config.Cfg.Resources = nil
+		if config.Cfg.Resources == nil {
+			config.Cfg.Resources = make(map[string]config.Resource)
+		}
+		config.Cfg.Resources["requests"] = config.Resource{
+			CPU:    "100m",
+			Memory: "128Mi",
+		}
 		config.Cfg.Replicas = config.Cfg.TestReplicas
 	}
 	config.Cfg.Image.Path = image
